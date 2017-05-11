@@ -43,7 +43,25 @@ public class RestRootWebService extends HttpServlet
         }
 
         builder.entity(new SpecialInputStream(bodysize));
-        builder.header("content-length: ", bodysize + "");
+
+        return builder.build();
+    }
+
+    @GET
+    @Path("/{bucketname}/{obj}")
+    public Response getObj(@Context HttpServletRequest req, @Context HttpServletResponse response)
+            throws IOException
+    {
+        logger.info("get mesg in");
+        ResponseBuilder builder = Response.status(200);
+        int bodysize = 1024 * 1024;
+        String bstr = req.getHeader("bodysize");
+        if (StringUtils.isNotBlank(bstr))
+        {
+            bodysize = Integer.parseInt(bstr);
+        }
+
+        builder.entity(new SpecialInputStream(bodysize));
 
         return builder.build();
     }
@@ -51,6 +69,24 @@ public class RestRootWebService extends HttpServlet
     @PUT
     @Path("/")
     public Response putMsg(@Context HttpServletRequest req, @Context HttpServletResponse response,
+            InputStream in) throws IOException
+    {
+        logger.info("put mesg in");
+        ResponseBuilder builder = Response.status(200);
+
+        BufferedInputStream bin = new BufferedInputStream(in);
+        byte buffer[] = new byte[1024 * 64];
+        while (bin.read(buffer) != -1)
+        {
+
+        }
+
+        return builder.build();
+    }
+
+    @PUT
+    @Path("/{bucketname}/{obj}")
+    public Response putObj(@Context HttpServletRequest req, @Context HttpServletResponse response,
             InputStream in) throws IOException
     {
         logger.info("put mesg in");
